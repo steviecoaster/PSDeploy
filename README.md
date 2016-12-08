@@ -4,7 +4,7 @@ Powershell console for PDQ Deploy
 #Installing the Module
 
 Download the zip file or clone this repo to your computer
-Extract the Deploy-Software package to your PS Modules directory (C:\Program Files\WindowsPowershell\Modules works a treat!)
+Extract the Deploy-Software package to your PS Modules directory (C:\Program Files\WindowsPowershell\Modules\Deploy-Software works a treat!)
 
 #Usage
 
