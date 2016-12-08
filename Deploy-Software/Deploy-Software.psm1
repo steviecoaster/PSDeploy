@@ -6,7 +6,10 @@
 		[switch]$Deploy,
 		
 		[parameter(Mandatory = $false)]
-		[switch]$Inventory		
+		[switch]$Inventory,
+		
+		[parameter(Mandatory = $true)]
+		[string]$server
 		
 		
 	)
@@ -18,7 +21,7 @@ $VerbosePreference = "Continue"
 	If ($Deploy)
 	{
 		#Grab the list of packages from the server into an array
-		$PDQPackages = Invoke-Command -ComputerName tuscpdq { "SELECT Name from Packages;" | sqlite3.exe "C:\ProgramData\Admin Arsenal\PDQ Deploy\Database.db" } | Sort-Object
+		$PDQPackages = Invoke-Command -ComputerName $server { "SELECT Name from Packages;" | sqlite3.exe "C:\ProgramData\Admin Arsenal\PDQ Deploy\Database.db" } | Sort-Object
 		#Empty placeholder
 		$targets = ""
 		#Empty array for the custom objects of Packages so I can show ID PackageName to the user.
@@ -69,7 +72,7 @@ $VerbosePreference = "Continue"
 		
 		#Start the deployment
 		Write-Verbose -Message "Starting Deployment on targets: $targets"
-		Invoke-Command -ComputerName tuscpdq -ScriptBlock { pdqdeploy deploy -Package $args[0] -Targets $args[1] } -ArgumentList $selectedpackage.Name, $targets
+		Invoke-Command -ComputerName $server -ScriptBlock { pdqdeploy deploy -Package $args[0] -Targets $args[1] } -ArgumentList $selectedpackage.Name, $targets
 		
 		#Give the remote processes time to start before we start looking for them. Noone likes a false positive.
 		Start-Sleep -Seconds 10
@@ -127,7 +130,7 @@ $VerbosePreference = "Continue"
 		
 		$UpperTarget = $target.ToUpper()
 		$sql = "Select Applications.Name , Applications.Version FROM Applications WHERE  Applications.Name LIKE '%%$App%%' AND Applications.ComputerId = (SELECT Computers.ComputerId FROM Computers WHERE Computers.Name = '$UpperTarget');"
-		$result = Invoke-Command -ComputerName tuscpdq -ScriptBlock { $args[0] | sqlite3.exe 'C:\ProgramData\Admin Arsenal\PDQ Inventory\Database.db' } -ArgumentList $sql
+		$result = Invoke-Command -ComputerName $server -ScriptBlock { $args[0] | sqlite3.exe 'C:\ProgramData\Admin Arsenal\PDQ Inventory\Database.db' } -ArgumentList $sql
 		
 		Write-Output $result.Replace('|', ' ')
 		
