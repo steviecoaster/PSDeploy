@@ -11,6 +11,7 @@ Extract the Deploy-Software package to your PS Modules directory (C:\Program Fil
 Deploy-Software -Server [servername] -Deploy
 
 Launches a menu based deployment system for pushing packages with PDQ Deploy's command-line interface.
+Using the -Collection switch with -Deploy will enable you to select a Collection from Inventory to deploy too.
 
 Deploy-Software -Server [servername] -Inventory
 
