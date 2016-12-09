@@ -183,7 +183,7 @@ If($deployobject.DeployStatus -eq "0"){
     }
 
 Write-Verbose "Returning successful deployment targets"
-Write-Output "$deployobject.Name deployment $return"
+Write-Output $($deployobject.Name + ' ' + "deployment was $return!")
 }
 
 
