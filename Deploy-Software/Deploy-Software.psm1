@@ -161,11 +161,15 @@ $complete = Invoke-Command -ComputerName $Server -Scriptblock { $SuccessSQL | sq
 
 Foreach($c in $complete){
 
+#Convoluded bullshit to get the second value from the string returned by sql. I really really hate turning sql results into objects
 $cname = (($c.Substring($c.IndexOf("|"))).Replace('|',''))
 
 $deployobject = New-Object System.Object
+#This works for me, I'll probably redo it so it pulls everything before the first | in the return results. I'm OK with this for now. If you have Deployment ID's < or > 5 digits, change the second number accordingly.
 $deployobject | Add-Member -Type NoteProperty -Name DeploymentID -Value $c.SubString(0,5)
+#Great, we got the second value. But we gotta strip that second | off of it. This code does that and stores the result.
 $deployobject | Add-Member -Type NoteProperty -Name Name -Value $cname.SubString(0, $cname.Length - 1)
+#The last character from the result is the success code. Simple to grab that [-1] is the last character of a string!
 $deployobject | Add-Member -type NoteProperty -Name DeployStatus -Value $c[-1]
 
 #Make the status code human readable.
