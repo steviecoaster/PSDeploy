@@ -156,8 +156,8 @@ Foreach ($dt in $deploytargets)
 
 
 $DB = "C:\ProgramData\Admin Arsenal\PDQ Deploy\Database.db"
-$SQL = "Select DeploymentComputers.DeploymentId, DeploymentComputers.ShortName , DeploymentComputerSteps.IsFailed  From DeploymentComputers JOIN DeploymentComputerSteps on DeploymentComputers.DeploymentComputerId = DeploymentComputerSteps.DeploymentComputerId where DeploymentComputers.Deploymentid = (SELECT MAX(DeploymentComputers.Deploymentid) FROM DeploymentComputers);"
-$complete = Invoke-Command -ComputerName $Server -Scriptblock { $SQL | sqlite3.exe $db }
+$SuccessSQL = "Select DeploymentComputers.DeploymentId, DeploymentComputers.ShortName , DeploymentComputerSteps.IsFailed  From DeploymentComputers JOIN DeploymentComputerSteps on DeploymentComputers.DeploymentComputerId = DeploymentComputerSteps.DeploymentComputerId where DeploymentComputers.Deploymentid = (SELECT MAX(DeploymentComputers.Deploymentid) FROM DeploymentComputers);"
+$complete = Invoke-Command -ComputerName $Server -Scriptblock { $SuccessSQL | sqlite3.exe $db }
 
 Foreach($c in $complete){
 
@@ -178,6 +178,7 @@ If($deployobject.DeployStatus -eq "0"){
      $return = "Failed!"
     }
 
+Write-Verbose "Returning successful deployment targets"
 Write-Output "$deployobject.Name deployment $return"
 }
 
